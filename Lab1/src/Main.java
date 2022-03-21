@@ -1,31 +1,52 @@
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
-       File file = new File("plik.txt");
-       int length =(int)file.length();
-        try ( FileInputStream stream = new FileInputStream("plik.txt");
-              InputStreamReader reader = new InputStreamReader(stream);)
+       Zad2();
+
+
+
+    }
+    private static void Zad1(){
+        File file = new File("plik.txt");
+        try (
+                FileInputStream inputStream = new FileInputStream(file);
+                InputStreamReader fileReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) // UTF-8
         {
-
-
-            char[] data = new char[length];
-            int readBytes = reader.read(data, 0,length );
-            reader.read(data, 0, length);
-            if (readBytes !=length) {
-                throw new IOException("File reading error.");
+            char[] buffer = new char[(int) file.length()];
+            while (true) {
+                int count = fileReader.read(buffer, 0, buffer.length); // where count variable stores number of read characters
+                if (count == -1) {
+                    break;
+                }
+                if (count > 0) {
+                    String text = new String(buffer, 0, count);
+                    System.out.print(text);
+                }
             }
-
-
-            String text = new String(data);
-            System.out.println(text);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+    private static void Zad2(){
+        File file = new File("zadanie2.txt");
+        try (
+                FileOutputStream outputStream = new FileOutputStream(file);
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(System.in))
+               )
+        {
+            String text= reader.readLine();
+            outputStream.write(text.getBytes(StandardCharsets.UTF_8));
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
+
