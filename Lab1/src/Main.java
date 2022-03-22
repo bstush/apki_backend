@@ -1,36 +1,38 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 public class Main {
     public static void main(String[] args) {
-       Zad3();
-
-
-
+       Zad6();
     }
 
-    private static void Zad1(){
+    private static String Zad1(){
         File file = new File("plik.txt");
         try (
                 FileInputStream inputStream = new FileInputStream(file);
-                InputStreamReader fileReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) // UTF-8
+                InputStreamReader fileReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8))
         {
+            StringBuffer stringBuilder = new StringBuffer();
             char[] buffer = new char[(int) file.length()];
             while (true) {
-                int count = fileReader.read(buffer, 0, buffer.length); // where count variable stores number of read characters
+                int count = fileReader.read(buffer, 0, buffer.length);
+
                 if (count == -1) {
                     break;
                 }
-                if (count > 0) {
-                    String text = new String(buffer, 0, count);
-                    System.out.print(text);
-                }
+
+                stringBuilder.append(buffer, 0, count);
             }
-            System.out.println();
+
+            return stringBuilder.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return "";
     }
 
     private static void Zad2(){
@@ -73,6 +75,37 @@ public class Main {
             return point;
         }
         return -1;
+    }
+
+    private static void Zad4(){
+
+    }
+    private static void Zad5(){
+        ZonedDateTime local = ZonedDateTime.now();
+
+        System.out.println(local);
+        System.out.println("Obecny lokalny czas: " + local.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL)));
+
+
+
+        ZonedDateTime global = ZonedDateTime.now(ZoneOffset.UTC);
+        System.out.println("Obecny globalny czas: " + global.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL)));
+
+
+
+
+    }
+    private static void Zad6 (){
+        String str = Zad1();
+        String[] lines = str.split("\r?\n");
+
+        for (int i=0; i< lines.length; i++){
+            System.out.println(i+1 + " " + lines[i]);
+        }
+    }
+    private static void Zad7(){
+
+
     }
 }
 
