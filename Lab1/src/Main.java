@@ -4,9 +4,14 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class Main {
+    private static int[] CRC_TABLE = new int[256];
+
     public static void main(String[] args) {
-       Zad6();
+       Zad8();
     }
 
     private static String Zad1(){
@@ -78,8 +83,28 @@ public class Main {
     }
 
     private static void Zad4(){
+        for (int i = 0; i < 256; ++i) {
+            int code = i;
+            for (int j = 0; j < 8; ++j) {
+                code = ((code & 0x01) == 1 ? 0xEDB88320 ^ (code >>> 1) : (code >>> 1));
+            }
+            CRC_TABLE[i] = code;
+        }
 
+        String result = Integer.toBinaryString(crc32("This is example text ..."));
+
+        System.out.println(Long.parseLong(result,2));
     }
+    private static int crc32(String text){
+        int crc = -1;
+        for (int i = 0; i < text.length(); ++i) {
+      	int code = (int) text.charAt(i);
+            crc = CRC_TABLE[(code ^ crc) & 0xFF] ^ (crc >>> 8);
+        }
+        return (-1 ^ crc) >>> 0;
+    }
+
+
     private static void Zad5(){
         ZonedDateTime local = ZonedDateTime.now();
 
@@ -105,6 +130,33 @@ public class Main {
     }
     private static void Zad7(){
 
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        User7 userObject = new User7("John", 21);
+        String userJson = null;
+        try {
+            userJson = objectMapper.writeValueAsString(userObject);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(userJson); // {"name":"John","age":21}
+
+    }
+    private static void Zad8(){
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String userJson = "{\"name\":\"John\",\"age\":21}";
+        User8 userObject = null;
+        try {
+            userObject = objectMapper.readValue(userJson, User8.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(userObject.getName()); // John
+        System.out.println(userObject.getAge());  // 21
 
     }
 }
